@@ -1,6 +1,7 @@
 import requests
 import time
 import logging
+import os
 
 # Configure logging
 logging.basicConfig(
@@ -12,8 +13,8 @@ logging.basicConfig(
     ]
 )
 
-# Replace this with your actual Discord webhook URL
-webhook_url = ""
+webhook_url = os.getenv("DISCORD_WEBHOOK_URL", "")
+check_interval = int(os.getenv("CHECK_INTERVAL_SECONDS", "30"))
 
 api_url = "https://result.doenets.lk/result/service/examDetails"
 
@@ -49,6 +50,8 @@ def check_for_results(last_seen_year):
 
 if __name__ == "__main__":
     logging.info("Starting to monitor the API for A/L exam result changes...")
+    if not webhook_url:
+        raise SystemExit("DISCORD_WEBHOOK_URL is required.")
     last_seen_year = None
 
     # Get the initial value
@@ -70,6 +73,6 @@ if __name__ == "__main__":
         if new_year != last_seen_year:
             logging.info("Result year changed! Stopping monitoring.")
             break
-        next_check = time.localtime(time.time() + 30)
+        next_check = time.localtime(time.time() + check_interval)
         logging.info(f"Next check scheduled at {time.strftime('%H:%M:%S', next_check)}")
-        time.sleep(30)  # Wait 30 seconds before next check
+        time.sleep(check_interval)

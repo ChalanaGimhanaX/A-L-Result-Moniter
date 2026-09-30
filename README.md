@@ -1,13 +1,44 @@
-# Exam Result Notifier
+# A/L Result Monitor
 
-This script checks if the A/L exam results are available or not by monitoring the official API.
+Python script that polls the Sri Lankan Department of Examinations result metadata endpoint and sends a Discord webhook notification when the published A/L result year changes.
 
-- It periodically queries the Department of Examinations API.
-- If the result year changes, it sends a notification to a Discord channel using a webhook.
-- The script prints the API response in the console and logs all actions.
+## What It Does
 
-**Usage:**  
-Run `main.py` with Python. Make sure to set your Discord webhook URL in the script.
+- Polls `https://result.doenets.lk/result/service/examDetails`
+- Watches the `yearAlResult` value
+- Sends a Discord notification when that value changes
+- Logs checks to both console output and `results_monitor.log`
 
----
-This is made to check if the result is available or not.
+## Setup
+
+Install dependencies:
+
+```bash
+pip install requests
+```
+
+Set your Discord webhook URL in the environment:
+
+```bash
+export DISCORD_WEBHOOK_URL="https://discord.com/api/webhooks/..."
+python main.py
+```
+
+PowerShell:
+
+```powershell
+$env:DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/..."
+python main.py
+```
+
+## Configuration
+
+By default the script checks every 30 seconds. You can change that with:
+
+```bash
+CHECK_INTERVAL_SECONDS=60 python main.py
+```
+
+## Notes
+
+This is a lightweight notification script, not an official government service. Keep polling intervals reasonable and verify results through the official website.
